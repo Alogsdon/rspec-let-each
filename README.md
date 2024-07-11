@@ -1,1 +1,1 @@
-# rspec-expect-each
+# rspec-let-each
