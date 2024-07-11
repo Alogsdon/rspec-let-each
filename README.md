@@ -1,4 +1,4 @@
-# rspec-expect-each
+# rspec-let-each
 
 this is just a proof of concept for an rspec helper idea I had.
 
