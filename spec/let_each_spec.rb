@@ -1,10 +1,10 @@
 
-RSpec.describe 'context_each helper' do
+RSpec.describe 'let_each helper' do
   context 'with x' do
     # lazy signature
-    context_each(:x, 2) { [mock_thing.x, 6] }
+    let_each(:x, 2) { [mock_thing.x, 6] }
     # eager signature
-    context_each(:y, [33, 44, 55])
+    let_each(:y, [33, 44, 55])
     let(:mock_thing) { double('mock_thing', x: lazy_x) }
     let(:lazy_x) { 4 }
 
@@ -14,8 +14,8 @@ RSpec.describe 'context_each helper' do
       end
     end
 
-    shared_examples 'an example with a context_each' do
-      context_each(:a, 2) { [1, 2] }
+    shared_examples 'an example with a let_each' do
+      let_each(:a, 2) { [1, 2] }
 
       it 'a is an option from the block result' do
         expect(a).to be_in([1, 2])
@@ -30,7 +30,7 @@ RSpec.describe 'context_each helper' do
       expect(y).to be_in([33, 44, 55])
     end
 
-    it_behaves_like 'an example with a context_each'
+    it_behaves_like 'an example with a let_each'
 
     context 'when changing an upstream let' do
       let(:lazy_x) { 12 }
@@ -42,8 +42,8 @@ RSpec.describe 'context_each helper' do
       it_behaves_like 'a shared example'
     end
 
-    context 'when nesting more context_each' do
-      context_each(:z, 2) { [77, 88] }
+    context 'when nesting more let_each' do
+      let_each(:z, 2) { [77, 88] }
 
       it 'sets z to one of the block results' do
         expect(z).to be_in([77, 88])

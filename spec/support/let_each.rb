@@ -1,23 +1,12 @@
 module ContextEachHelper
   # Usage:
   # lazy signature
-  # context_each(:x, 2) { [let_foo, let_bar] }
+  # let_each(:x, 2) { [let_foo, let_bar] }
   #
   # eager signature
-  # context_each(:y, [eager_foo, eager_bar])
+  # let_each(:y, [eager_foo, eager_bar])
   #
-  # the motivation is to get the coverage of
-  # [foo,bar].each do |x|
-  #   context "with x=#{x}" do
-  #     ...examples
-  #   end
-  # end
-  #
-  # but with the convenience of
-  # let(:x) { [foo, bar].sample }
-  # ...examples
-  #
-  # the lazy_array_block plays nice with `let`s, but contexts are eagerly evaluated
+  # the lazy_array_block plays nice with other `let`s, but contexts are eagerly evaluated
   # so we need to provide a "length" to know how many contexts to spawn
   # then the array values can still be lazily evaluated
   # alternatively, just pass an eager array if you don't need the laziness on the values
@@ -28,7 +17,7 @@ module ContextEachHelper
   # AFAIK, this works in nested contexts, and with shared_examples/contexts,
   # but I'd suggest pushing the usage as close to the actual examples as possible, so you don't enumerate too much
   #
-  def context_each(name, length_or_array, &lazy_array_block)
+  def let_each(name, length_or_array, &lazy_array_block)
     if lazy_array_block
       raise 'must specify the length when providing a lazy array block' unless length_or_array.is_a?(Integer)
       length = length_or_array
@@ -42,16 +31,16 @@ module ContextEachHelper
     array_proc_key = :"_#{name}_array_proc"
     # I just didn't handle this case. doing so is a bit tricky with the approach I used
     # we'd need to replay the `it` overrides with the changed value removed
-    raise "context_each already used for key: #{name}" if instance_methods.include?(array_proc_key)
+    raise "let_each already used for key: #{name}" if instance_methods.include?(array_proc_key)
     # `it` was already used in this context but we didn't get a chance to override it yet
     if defined?(@context_leafs)
-      raise 'context_each used after an example. either nest in a new context or arrange `context_each` above examples'
+      raise 'let_each used after an example. either nest in a new context or arrange `let_each` above examples'
     end
 
     # behavior is also unexpected if we `let` with this same name, but I'm not going out of my way to guard against that
 
     let(array_proc_key, &lazy_array_block) # memoize the array proc result
-    # `super` would only work the first time we call context_each per context. so we'll just closure it every time
+    # `super` would only work the first time we call let_each per context. so we'll just closure it every time
     old_it = method(:it).unbind
     define_singleton_method(:it) do |*args, &block|
       if defined?(@context_leafs)
@@ -59,6 +48,7 @@ module ContextEachHelper
         # this is an improvement to reuse them when possible
         # (when `it` is used multiple times in the same context)
         # should be able to do something similar with `context` but I'm not worried about it right now
+        # new context = caches are dumped anyway, so there's probably not much to gain
         @context_leafs.each do |leaf|
           old_it.bind_call(leaf, *args, &block)
         end
