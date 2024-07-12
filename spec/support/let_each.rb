@@ -1,4 +1,4 @@
-module ContextEachHelper
+module LetEachHelper
   # Usage:
   # lazy signature
   # let_each(:x, 2) { [let_foo, let_bar] }
@@ -71,5 +71,5 @@ module ContextEachHelper
 end
 
 RSpec.configure do |config|
-  config.extend ContextEachHelper
+  config.extend LetEachHelper
 end
