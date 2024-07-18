@@ -38,3 +38,5 @@ let_each(:x, 2) { [foo, bar] }
 it_behaves_like 'an example'
 ```
 
+note: this repo just has the helper and some specs. It's NOT a gem, currently, and I doubt I'll go that far.
+However, anyone should feel free to fork the code and or comment/contribute.
