@@ -25,7 +25,18 @@ RSpec.describe 'let_each_with helper' do
 
     it { is_expected.to eq(y) }
 
-    it 'both may depend on upstream let' do
+    context 'multiple let_eaches' do
+      let_each(:a, 2) { [1, 2] }
+        .with(:b) { [10, 20] }
+
+      let_each(:c, 2) { [a, 3] }
+        .with(:d) { [b, 30] }
+
+      it 'variables all work' do
+        expect(a).to eq(b / 10)
+        expect(x).to eq((y - 1)**0.5)
+        expect(c).to eq(d / 10)
+      end
     end
   end
 
