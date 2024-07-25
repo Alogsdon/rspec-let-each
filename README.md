@@ -38,5 +38,18 @@ let_each(:x, 2) { [foo, bar] }
 it_behaves_like 'an example'
 ```
 
+Using the `let_each` by itself lead to some awkward patterns when zipping expectations into the examples.
+That's why I'm adding a chainable method `with`, intended for the corresponding expectations, or possibly actions.
+now we might write
+```
+subject { test_method(x) }
+
+let_each(:x, 2) { [foo, bar] }
+  .with(:expected_x) { [foo_expect, bar_expect] }
+
+it { is_expected.to eq(:expected_x) }
+```
+it can be continually chained, in case we need variables in tripples or quads too, why not.
+
 note: this repo just has the helper and some specs. It's NOT a gem, currently, and I doubt I'll go that far.
 However, anyone should feel free to fork the code and or comment/contribute.

@@ -2,6 +2,7 @@ module LetEachHelper
   # Usage:
   # lazy signature
   # let_each(:x, 2) { [let_foo, let_bar] }
+  #   .with(:y) { [foo_expected, bar_expected] }
   #
   # eager signature
   # let_each(:y, [eager_foo, eager_bar])
@@ -17,6 +18,8 @@ module LetEachHelper
   # AFAIK, this works in nested contexts, and with shared_examples/contexts,
   # but I'd suggest pushing the usage as close to the actual examples as possible, so you don't enumerate too much
   #
+  # I've added a chainable `with` method to allow for parallely assigned lets
+  # this can be also be chained multiple times
   def let_each(name, length_or_array, &lazy_array_block)
     if lazy_array_block
       raise 'must specify the length when providing a lazy array block' unless length_or_array.is_a?(Integer)
@@ -42,6 +45,7 @@ module LetEachHelper
     let(array_proc_key, &lazy_array_block) # memoize the array proc result
     # `super` would only work the first time we call let_each per context. so we'll just closure it every time
     old_it = method(:it).unbind
+    chainable = LetEachWithChainable.new(self, length, name)
     define_singleton_method(:it) do |*args, &block|
       if defined?(@context_leafs)
         # we make a lot of contexts with this helper
@@ -58,14 +62,56 @@ module LetEachHelper
         # so we assign the local variable too
         @context_leafs = context_leafs = []
         length.times do |i|
-          context "with #{name}[#{i}]" do
+          context "when #{name}[#{i}]" do
             let(name) { send(array_proc_key)[i] }
+            chainable.each do |proc|
+              instance_exec(i, &proc)
+            end
 
             old_it.bind_call(self, *args, &block)
             context_leafs << self
           end
         end
       end
+    end
+    chainable
+  end
+
+  class LetEachWithChainable
+    attr_accessor :withs, :example_group
+
+    def initialize(example_group, length, parent_let_each_name)
+      @example_group = example_group
+      @length = length
+      @parent_let_each_name = parent_let_each_name
+      @withs = []
+    end
+
+    def each(&block)
+      withs.each do |with_proc|
+        block.call(with_proc)
+      end
+    end
+
+    def with(name, array = nil, &lazy_array_block)
+      if lazy_array_block
+        # length is assumed to be the same as the base let_each
+        raise 'dont need to provide a second argument when providing a lazy array block' if array
+      else
+        lazy_array_block = -> { array }
+      end
+      array_proc_key = :"_#{name}_array_proc"
+      # can memoize the proc right away
+      example_group.let(array_proc_key, &lazy_array_block)
+      # we can't unload the main `let` until we're in the context
+      # so just store the proc
+      withs << lambda do |index|
+        # self is the only variable not closured here
+        # we'll instance_exec this on the context
+        let(name) { send(array_proc_key)[index] }
+      end
+
+      self
     end
   end
 end
