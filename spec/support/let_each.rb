@@ -45,7 +45,7 @@ module LetEachHelper
     let(array_proc_key, &lazy_array_block) # memoize the array proc result
     # `super` would only work the first time we call let_each per context. so we'll just closure it every time
     old_it = method(:it).unbind
-    chainable = LetEachWithChainable.new(self, length, name)
+    chainable = LetEachWithChainable.new(self, length)
     define_singleton_method(:it) do |*args, &block|
       if defined?(@context_leafs)
         # we make a lot of contexts with this helper
@@ -80,10 +80,9 @@ module LetEachHelper
   class LetEachWithChainable
     attr_accessor :withs, :example_group
 
-    def initialize(example_group, length, parent_let_each_name)
+    def initialize(example_group, length)
       @example_group = example_group
       @length = length
-      @parent_let_each_name = parent_let_each_name
       @withs = []
     end
 
