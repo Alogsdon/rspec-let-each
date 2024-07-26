@@ -47,7 +47,7 @@ subject { test_method(x) }
 let_each(:x, 2) { [foo, bar] }
   .with(:expected_x) { [foo_expect, bar_expect] }
 
-it { is_expected.to eq(:expected_x) }
+it { is_expected.to eq(expected_x) }
 ```
 it can be continually chained, in case we need variables in tripples or quads too, why not.
 
