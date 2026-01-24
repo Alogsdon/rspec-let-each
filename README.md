@@ -93,3 +93,6 @@ end
 `let_each` is tested against and supports:
 - **Ruby:** 2.7, 3.0, 3.1, 3.2, 3.3, 3.4
 - **RSpec:** 3.0 and newer
+
+## License
+MIT
