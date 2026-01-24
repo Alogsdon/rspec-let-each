@@ -5,3 +5,4 @@ class Object
     raise ArgumentError.new("The parameter passed to #in? must respond to #include?")
   end
 end
+# "foo.to be_in(bar)"
