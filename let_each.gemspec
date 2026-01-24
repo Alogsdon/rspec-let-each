@@ -5,6 +5,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Andrew Logsdon']
   spec.license       = 'MIT'
   spec.homepage      = 'https://github.com/Alogsdon/rspec-let-each'
+  spec.required_ruby_version = '>= 2.7'
 
   spec.files         = Dir['lib/**/*.rb', 'LICENSE.txt', 'README.md']
   spec.require_paths = ['lib']

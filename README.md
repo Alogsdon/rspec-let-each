@@ -80,7 +80,7 @@ You can verify that the helper is loaded correctly by running a simple test:
 
 ```ruby
 RSpec.describe "LetEach Integration" do
-  let_each(:val) { [1, 2] }
+  let_each(:val, [1, 2])
   
   it "works" do
     expect([1, 2]).to include(val)
