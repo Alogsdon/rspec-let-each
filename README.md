@@ -1,5 +1,5 @@
 # LetEach
-rspec-let-each
+(rspec-let-each)
 
 `let_each` is an ergonomic RSpec helper that spawns context blocks with corresponding `let`s for each value in an array
 
@@ -39,9 +39,9 @@ let_each(:x, 2) { [foo, bar] }
 it_behaves_like 'an example'
 ```
 
-Using the `let_each` by itself lead to some awkward patterns when zipping expectations into the examples.
+Using the `let_each` by itself can lead to some awkward patterns when zipping expectations into the examples.
 That's why I added a chainable method `with`, intended for the corresponding expectations, or possibly actions.
-The length of all chained `with`s is assumed to be the same as the parent `let_each`
+(The length of all chained `with`s is assumed to be the same as the parent `let_each`)
 now we might write
 ```ruby
 subject { test_method(x) }
@@ -66,7 +66,7 @@ end
 ## Setup
 
 `let_each` is configured to automatically mix into RSpec's example groups when loaded.
-In some projects, the `lib` folder is automatically loaded. If not, just add a require for it.
+In some projects, the `lib` folder is automatically loaded. If not, just add a require for `let_each` in your test setup.
 ```ruby
 # spec/spec_helper.rb
 require 'let_each'
