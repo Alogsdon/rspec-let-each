@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/let_each.svg)](https://badge.fury.io/rb/let_each)
 ![Tests](https://github.com/Alogsdon/rspec-let-each/actions/workflows/test.yml/badge.svg)
 # LetEach
 (rspec-let-each)
