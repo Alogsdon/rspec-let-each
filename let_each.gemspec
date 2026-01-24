@@ -1,7 +1,9 @@
+require_relative 'lib/let_each/version'
+
 Gem::Specification.new do |spec|
   spec.name          = 'let_each'
   spec.summary       = 'Ergonomic context spawning for RSpec'
-  spec.version       = '0.1.0'
+  spec.version       = LetEach::VERSION
   spec.authors       = ['Andrew Logsdon']
   spec.license       = 'MIT'
   spec.homepage      = 'https://github.com/Alogsdon/rspec-let-each'
