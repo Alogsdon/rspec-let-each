@@ -55,6 +55,31 @@ it { is_expected.to eq(expected_x) }
 ```
 it can be continually chained, in case we need variables in tripples or quads too, why not.
 
+## Failure messaging
+
+Generated contexts try to tell you *which* value blew up, so you don't have to count into the array.
+
+When the values are known at load time (eager array, or explicit `labels:`), they go straight into the context name:
+
+```ruby
+let_each(:x, [10, 2]).with(:y, [101, 5])
+# sandbox when x[0] = 10, y = 101
+# sandbox when x[1] = 2, y = 5
+
+let_each(:x, 2, labels: %w[empty full]) { [[], [1]] }
+# sandbox when x[0] = empty
+# sandbox when x[1] = full
+```
+
+Lazy blocks can't be evaluated until the example runs, so those values are resolved and appended to the description of **failing** examples only:
+
+```
+1) my spec when x[1] is expected to eq 51 [x = 7, y = 51]
+   Failure/Error: it { is_expected.to eq(y) }
+```
+
+Turn the appending off with `LetEach.annotate_failures = false`.
+
 ## Installation
 
 Add this line to your application's `Gemfile` typically inside the `:test` group:
